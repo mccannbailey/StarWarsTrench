@@ -50,7 +50,7 @@
             this.initiationLabel.AutoSize = true;
             this.initiationLabel.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.initiationLabel.ForeColor = System.Drawing.Color.White;
-            this.initiationLabel.Location = new System.Drawing.Point(65, 278);
+            this.initiationLabel.Location = new System.Drawing.Point(62, 319);
             this.initiationLabel.Name = "initiationLabel";
             this.initiationLabel.Size = new System.Drawing.Size(0, 16);
             this.initiationLabel.TabIndex = 1;
@@ -58,7 +58,6 @@
             // 
             // timer
             // 
-            this.timer.Interval = 16;
             this.timer.Tick += new System.EventHandler(this.timer_Tick);
             // 
             // Form1
@@ -72,6 +71,7 @@
             this.Name = "Form1";
             this.Text = "Star Wars";
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.Form1_Paint);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyDown);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
