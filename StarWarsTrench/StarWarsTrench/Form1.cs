@@ -15,17 +15,21 @@ namespace StarWarsTrench
     {
         Pen solidWhite, solidRed;
         Brush whiteBrush, orangeBrush;
-        bool initiate, mission, expl = true, xWing = true;
-        int cx, cy, xCoord = 10;
+
+        bool initiate, mission, expl = true, starDraw = true, xWing = true;
+        int cx, cy, xCoord = 10, yCoord;     
         int xSize = 5, ySize = 5;
+        int growth = 1;
 
         public Form1()
         {
             InitializeComponent();
+            cx = this.Width / 2; cy = this.Height / 2;
+            yCoord = cy - 90;
+
             solidWhite = new Pen(Color.White); solidRed = new Pen(Color.Red);
             whiteBrush = new SolidBrush(Color.White); orangeBrush = new SolidBrush(Color.Orange);
-            initiationLabel.Text = "Confidential mission document, click\nhere to begin";
-            cx = this.Width / 2; cy = this.Height / 2;
+            initiationLabel.Text = "Confidential mission document, click\nhere to begin";                    
         }
 
         private void initiationLabel_Click(object sender, EventArgs e)
@@ -44,17 +48,19 @@ namespace StarWarsTrench
                 initiationLabel.ForeColor = Color.Green;
                 initiationLabel.Text = "Mission Success, well done.";
                 mission = true;
-                if (xCoord == 350)  //rect goes on forever
-                {
-                    timer.Enabled = false;
-                }
+            }
+            else if (e.KeyCode == Keys.F && xCoord < cx - 20 || xCoord > cx + 20)
+            {
+                initiationLabel.ForeColor = Color.Red;
+                initiationLabel.Text = "Mission failed, bomb dropped off target.";
+                timer.Enabled = false;
             }
         }
 
         private void timer_Tick(object sender, EventArgs e)
         {
-            xCoord += 10;
-            if (xCoord >= 350 && mission != true)
+            xCoord += 7;
+            if (xCoord >= 300 && mission != true)
             {
                 timer.Enabled = false;
                 initiationLabel.ForeColor = Color.Red;
@@ -62,10 +68,12 @@ namespace StarWarsTrench
             }
             if (mission && expl)
             {
-                for (int x = 0; x < 10; x +=1)
+                for (int x = 0; x < 21; x += 1)
                 {
-                    xSize++; ySize++;
+                    yCoord++;
+                    growth++;                    
                 }
+                this.Refresh();
             }
             this.Refresh();
         }
@@ -76,19 +84,29 @@ namespace StarWarsTrench
             if (initiate)
             {
                 e.Graphics.FillRectangle(whiteBrush, xCoord, 50, 15, 15);
-                #region Draw Death Star
-                e.Graphics.DrawEllipse(solidWhite, cx - 100, cy - 100, 200, 200);
-                e.Graphics.DrawEllipse(solidWhite, cx - 70, cy - 70, 60, 60);
-                e.Graphics.DrawLine(solidWhite, 100, 215, 300, 215);
-                e.Graphics.DrawLine(solidRed, cx, cy - 80, 200, 215);
-                e.Graphics.DrawRectangle(solidWhite, cx - 10, cy - 100, 20, 20);
-                e.Graphics.DrawEllipse(solidRed, cx - 10, cy + 5, 20, 20);
-                #endregion                                                        
-
-                if (mission == true && expl == true)
+                if (starDraw)
                 {
-                    e.Graphics.FillEllipse(orangeBrush, cx, cy, xSize, ySize);              
+                    #region Draw Death Star
+                    e.Graphics.DrawEllipse(solidWhite, cx - 100, cy - 100, 200, 200);
+                    e.Graphics.DrawEllipse(solidWhite, cx - 70, cy - 70, 60, 60);
+                    e.Graphics.DrawLine(solidWhite, 100, 215, 300, 215);
+                    e.Graphics.DrawLine(solidRed, cx, cy - 80, 200, 215);
+                    e.Graphics.DrawRectangle(solidWhite, cx - 10, cy - 100, 20, 20);
+                    e.Graphics.DrawEllipse(solidRed, cx - 10, cy + 5, 20, 20);
+                    #endregion
                 }
+                if (mission == true) 
+                {
+                    e.Graphics.FillEllipse(whiteBrush, cx - 5, yCoord, 10, 10);                               
+                }
+                if (expl == true && yCoord >= 200)
+                {
+                    e.Graphics.FillEllipse(orangeBrush, cx - growth / 2, cy - growth / 2, growth, growth);
+                    if (growth >= 20)
+                    {
+                        //stop explosion   
+                    }
+                }               
             }
         }
     }
