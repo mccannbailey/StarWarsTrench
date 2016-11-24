@@ -17,7 +17,7 @@ namespace StarWarsTrench
         Brush whiteBrush, orangeBrush;
         Button restartButton;
 
-        bool initiate, mission, expl = true, starDraw = true;
+        bool initiate, mission, restart, expl = true, starDraw = true;
         int cx, cy, xCoord = 10, yCoord;
         int growth = 1;
 
@@ -25,7 +25,7 @@ namespace StarWarsTrench
         {
             InitializeComponent();
             cx = this.Width / 2; cy = this.Height / 2;
-            yCoord = cy - 90;
+            yCoord = cy - 110;
 
             solidWhite = new Pen(Color.White); solidRed = new Pen(Color.Red);
             whiteBrush = new SolidBrush(Color.White); orangeBrush = new SolidBrush(Color.Orange);
@@ -52,6 +52,7 @@ namespace StarWarsTrench
             {
                 initiationLabel.ForeColor = Color.Red;
                 initiationLabel.Text = "Mission failed, bomb dropped off target.";
+                ResetMethod();
                 timer.Enabled = false;
             }
         }
@@ -64,6 +65,11 @@ namespace StarWarsTrench
                 timer.Enabled = false;
                 initiationLabel.ForeColor = Color.Red;
                 initiationLabel.Text = "Mission failed.";
+                ResetMethod();
+                restartButton.Click += delegate
+                {
+                    Application.Restart();
+                };
             }
             if (mission && expl)
             {
@@ -82,16 +88,18 @@ namespace StarWarsTrench
             e.Graphics.Clear(Color.Black);
             if (initiate)
             {
-                e.Graphics.FillRectangle(whiteBrush, xCoord, 50, 15, 15);
+                e.Graphics.DrawString("X", new Font("Microsoft Sans Serif", 10.0f, FontStyle.Bold), whiteBrush, xCoord, 50);
                 if (starDraw)
                 {
                     #region Draw Death Star
-                    e.Graphics.DrawEllipse(solidWhite, cx - 100, cy - 100, 200, 200);
-                    e.Graphics.DrawEllipse(solidWhite, cx - 70, cy - 70, 60, 60);
-                    e.Graphics.DrawLine(solidWhite, 100, 215, 300, 215);
-                    e.Graphics.DrawLine(solidRed, cx, cy - 80, 200, 215);
-                    e.Graphics.DrawRectangle(solidWhite, cx - 10, cy - 100, 20, 20);
-                    e.Graphics.DrawEllipse(solidRed, cx - 10, cy + 5, 20, 20);
+                    e.Graphics.DrawArc(solidWhite, cx - 100, cy - 100, 200, 200, 277, 345); //main figure
+                    e.Graphics.DrawEllipse(solidWhite, cx - 70, cy - 70, 60, 60); //offset circle
+                    e.Graphics.DrawLine(solidWhite, cx - 100, cy + 20, cx + 100, cy + 20); //mid line
+                    e.Graphics.DrawLine(solidRed, cx - 3, cy - 80, cx - 3, cy + 10); //red vertical line 1
+                    e.Graphics.DrawLine(solidRed, cx + 3, cy - 80, cx + 3, cy + 10); //red vertical line 1
+                    e.Graphics.DrawLine(solidWhite, cx - 13, cy - 100, cx - 3, cy - 80); //white line 1
+                    e.Graphics.DrawLine(solidWhite, cx + 13, cy - 100, cx + 3, cy - 80); //white line 2
+                    e.Graphics.DrawArc(solidRed, cx - 10, cy + 10, 20, 20, 273, 345); //main figure
                     #endregion
                 }
                 if (mission)
@@ -108,36 +116,24 @@ namespace StarWarsTrench
                         growth = 0;
                     }
                     e.Graphics.DrawString("Mission Success.", new Font("Courier New", 20.0f, FontStyle.Bold), whiteBrush, cx - 130, cy);
-                    #region Create restart button
-                    restartButton = new Button();
-                    restartButton.Location = new Point(cx - 50, cy + 100);
-                    this.Controls.Add(restartButton);
-                    restartButton.ForeColor = Color.White;
-                    restartButton.Text = "Restart";
-                    #endregion
-                    restartButton.Click += delegate
+                    ResetMethod(); 
                     {
-                        pictureBox1.Visible = true;
-                        starDraw = true;
-                        initiate = false;
-                        mission = false;
-                        restartButton.Dispose();
-                        this.Controls.Remove(restartButton);
-                        xCoord = 10;
-                        growth = 1;
-                        initiationLabel.Text = "Confidential mission document, click\nhere to begin";
-                        this.Refresh();
-                    };
+                        restartButton.Click += delegate
+                        {
+                            Application.Restart();
+                        };
+                    } 
                 }
             }
         }
-        //experiment with arrays in method for locations of animations
-        public int[] DeathStar(int x, int y, int size, EventArgs e)
+
+        private void ResetMethod()
         {
-            int[] coord = new int [2];
-            coord[0] = cx - 100;
-            coord[1] = cy - 100;
-            //return 
+            restartButton = new Button();
+            restartButton.Location = new Point(cx - 50, cy + 100);
+            this.Controls.Add(restartButton);
+            restartButton.ForeColor = Color.White;
+            restartButton.Text = "Restart";
         }
     }
 }
