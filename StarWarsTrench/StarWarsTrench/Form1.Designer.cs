@@ -68,6 +68,7 @@
             this.ClientSize = new System.Drawing.Size(384, 361);
             this.Controls.Add(this.initiationLabel);
             this.Controls.Add(this.pictureBox1);
+            this.DoubleBuffered = true;
             this.Name = "Form1";
             this.Text = "Star Wars";
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.Form1_Paint);

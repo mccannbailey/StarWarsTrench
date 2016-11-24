@@ -15,10 +15,10 @@ namespace StarWarsTrench
     {
         Pen solidWhite, solidRed;
         Brush whiteBrush, orangeBrush;
+        Button restartButton;
 
-        bool initiate, mission, expl = true, starDraw = true, xWing = true;
-        int cx, cy, xCoord = 10, yCoord;     
-        int xSize = 5, ySize = 5;
+        bool initiate, mission, expl = true, starDraw = true;
+        int cx, cy, xCoord = 10, yCoord;
         int growth = 1;
 
         public Form1()
@@ -29,13 +29,13 @@ namespace StarWarsTrench
 
             solidWhite = new Pen(Color.White); solidRed = new Pen(Color.Red);
             whiteBrush = new SolidBrush(Color.White); orangeBrush = new SolidBrush(Color.Orange);
-            initiationLabel.Text = "Confidential mission document, click\nhere to begin";                    
+            initiationLabel.Text = "Confidential mission document, click\nhere to begin";
         }
 
         private void initiationLabel_Click(object sender, EventArgs e)
         {
             initiationLabel.Text = "Press f to use the force, Luke.";
-            pictureBox1.Dispose();
+            pictureBox1.Visible = false;
             timer.Enabled = true;
             initiate = true;
             this.Refresh();
@@ -43,11 +43,10 @@ namespace StarWarsTrench
 
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.F && xCoord >= cx - 20 && xCoord <= cx + 20)
+            if (e.KeyCode == Keys.F && xCoord >= cx - 15 && xCoord <= cx + 15)
             {
-                initiationLabel.ForeColor = Color.Green;
-                initiationLabel.Text = "Mission Success, well done.";
                 mission = true;
+                initiationLabel.Text = "";
             }
             else if (e.KeyCode == Keys.F && xCoord < cx - 20 || xCoord > cx + 20)
             {
@@ -59,7 +58,7 @@ namespace StarWarsTrench
 
         private void timer_Tick(object sender, EventArgs e)
         {
-            xCoord += 7;
+            xCoord += 10;
             if (xCoord >= 300 && mission != true)
             {
                 timer.Enabled = false;
@@ -71,7 +70,7 @@ namespace StarWarsTrench
                 for (int x = 0; x < 21; x += 1)
                 {
                     yCoord++;
-                    growth++;                    
+                    growth++;
                 }
                 this.Refresh();
             }
@@ -95,19 +94,50 @@ namespace StarWarsTrench
                     e.Graphics.DrawEllipse(solidRed, cx - 10, cy + 5, 20, 20);
                     #endregion
                 }
-                if (mission == true) 
+                if (mission)
                 {
-                    e.Graphics.FillEllipse(whiteBrush, cx - 5, yCoord, 10, 10);                               
+                    e.Graphics.FillEllipse(whiteBrush, cx - 5, yCoord, 10, 10);
                 }
-                if (expl == true && yCoord >= 200)
+                if (expl && yCoord >= 200)
                 {
                     e.Graphics.FillEllipse(orangeBrush, cx - growth / 2, cy - growth / 2, growth, growth);
-                    if (growth >= 20)
+                    if (growth >= 400)
                     {
-                        //stop explosion   
+                        timer.Enabled = false;
+                        starDraw = false;
+                        growth = 0;
                     }
-                }               
+                    e.Graphics.DrawString("Mission Success.", new Font("Courier New", 20.0f, FontStyle.Bold), whiteBrush, cx - 130, cy);
+                    #region Create restart button
+                    restartButton = new Button();
+                    restartButton.Location = new Point(cx - 50, cy + 100);
+                    this.Controls.Add(restartButton);
+                    restartButton.ForeColor = Color.White;
+                    restartButton.Text = "Restart";
+                    #endregion
+                    restartButton.Click += delegate
+                    {
+                        pictureBox1.Visible = true;
+                        starDraw = true;
+                        initiate = false;
+                        mission = false;
+                        restartButton.Dispose();
+                        this.Controls.Remove(restartButton);
+                        xCoord = 10;
+                        growth = 1;
+                        initiationLabel.Text = "Confidential mission document, click\nhere to begin";
+                        this.Refresh();
+                    };
+                }
             }
+        }
+        //experiment with arrays in method for locations of animations
+        public int[] DeathStar(int x, int y, int size, EventArgs e)
+        {
+            int[] coord = new int [2];
+            coord[0] = cx - 100;
+            coord[1] = cy - 100;
+            //return 
         }
     }
 }
