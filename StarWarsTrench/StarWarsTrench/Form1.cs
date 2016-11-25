@@ -53,6 +53,10 @@ namespace StarWarsTrench
                 initiationLabel.ForeColor = Color.Red;
                 initiationLabel.Text = "Mission failed, bomb dropped off target.";
                 ResetMethod();
+                restartButton.Click += delegate
+                {
+                    Application.Restart();
+                };
                 timer.Enabled = false;
             }
         }
@@ -126,7 +130,6 @@ namespace StarWarsTrench
                 }
             }
         }
-
         private void ResetMethod()
         {
             restartButton = new Button();
